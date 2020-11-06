@@ -6,7 +6,6 @@ import chaiAsPromised from 'chai-as-promised';
 import bcrypt from 'bcryptjs';
 
 const debug = require('debug')('facade-with-db:test');
-
 let userCollection: mongo.Collection | null;
 let client: mongo.MongoClient;
 
@@ -87,6 +86,7 @@ describe('########## Verify the UserFacade with a DataBase ##########', () => {
     const user = await UserFacade.getUser('dd@b.dk');
     expect(user.userName).to.equal('dd@b.dk');
   });
+
   it('Should not find xxx.@.b.dk', async () => {
     const user = await UserFacade.getUser('xxx.@.b.dk');
     expect(user).to.be.null;
@@ -96,9 +96,11 @@ describe('########## Verify the UserFacade with a DataBase ##########', () => {
     const status = await UserFacade.checkUser('pp@b.dk', 'secret');
     expect(status).to.be.true;
   });
+
   it("Should NOT correctly validate Peter Pan's check", async () => {
     await expect(UserFacade.checkUser('pp@b.dk', 'xxxx')).to.rejectedWith('Invalid Credentials');
   });
+
   it('Should NOT correctly validate non-existing users check', async () => {
     await expect(UserFacade.checkUser('pxxxx@b.dk', 'secret')).to.be.rejectedWith('Invalid Credentials');
   });

@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "mocha --exit -r ts-node/register test/**/*.ts",
+    "test": "mocha --exit -r ts-node/register -r dotenv/config test/**/*.ts",
     "testDebug": "mocha --exit -r ts-node/register --inspect=5858 test/**/*.ts",
     "dev": "node -r ts-node/register ./src/app.ts",
-    "dev:watch": "nodemon",
+    "dev:watch": "nodemon -r dotenv/config ./src/app.ts",
     "devDebug": "node --inspect=5858 -r ts-node/register ./src/app.ts",
     "start": "tsc && node ./build/app.js",
     "build": "tsc",

@@ -1,20 +1,17 @@
-require('dotenv').config();
 import express from 'express';
 import path from 'path';
 import { ApiError } from './errors/apiError';
-//Add if needed
-//import { requestLogger, errorLogger } from "./middlewares/logger";
 
 const app = express();
 
 app.use(express.static(path.join(process.cwd(), 'public')));
 
-//  Add if needed
-//app.use(requestLogger)
+// Add if needed
+// app.use(requestLogger)
+// app.use(errorLogger)
 
 app.use(express.json());
 
-//const userAPIRouter = require('./routes/userApi');
 const userAPIRouter = require('./routes/userApiDB');
 
 app.get('/api/dummy', (req, res) => {
@@ -22,9 +19,6 @@ app.get('/api/dummy', (req, res) => {
 });
 
 app.use('/api/users', userAPIRouter);
-
-//  Add if needed
-// app.use(errorLogger)
 
 app.use(function (err: any, req: any, res: any, next: Function) {
   if (err instanceof ApiError) {

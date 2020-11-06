@@ -1,15 +1,13 @@
-import express, { json } from 'express';
+import express from 'express';
 import userFacade from '../facades/userFacadeWithDB';
-import basicAuth from '../middlewares/basic-auth';
-const debug = require('debug')('user-endpoint');
-const router = express.Router();
 import { ApiError } from '../errors/apiError';
 import authMiddleware from '../middlewares/basic-auth';
-import * as mongo from 'mongodb';
 import { getConnectedClient } from '../config/setupDB';
-const MongoClient = mongo.MongoClient;
+const debug = require('debug')('user-endpoint');
+const router = express.Router();
 
-const USE_AUTHENTICATION = !process.env['SKIP_AUTHENTICATION'];
+// const USE_AUTHENTICATION = !process.env.SKIP_AUTHENTICATION;
+const USE_AUTHENTICATION = process.env.SKIP_AUTHENTICATION === 'false';
 
 let dbInitialized = false;
 
@@ -24,13 +22,7 @@ router.use((req, res, next) => {
     return next();
   }
   return res.json({ info: 'DB not ready, try again' });
-  // const err = new ApiError("Database not ready", 500);
-  // next(err)
 });
-
-if (USE_AUTHENTICATION) {
-  router.use(authMiddleware);
-}
 
 router.post('/', async function (req, res, next) {
   try {
@@ -67,6 +59,10 @@ router.get('/:userName', async function (req: any, res, next) {
 });
 
 if (USE_AUTHENTICATION) {
+  router.use(authMiddleware);
+}
+
+if (USE_AUTHENTICATION) {
   router.get('/user/me', async function (req: any, res, next) {
     try {
       const user_Name = req.userName;
@@ -81,6 +77,7 @@ if (USE_AUTHENTICATION) {
 }
 
 router.get('/', async function (req: any, res, next) {
+  console.log(USE_AUTHENTICATION);
   try {
     if (USE_AUTHENTICATION) {
       const role = req.role;
